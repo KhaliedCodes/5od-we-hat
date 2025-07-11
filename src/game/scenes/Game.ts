@@ -41,25 +41,24 @@ export class Game extends Scene
         this.keyS = this.input?.keyboard?.addKey("S");
         this.keyD = this.input?.keyboard?.addKey("D");
 
-        this.spawnPlayer();
-
+        
         this.input.once('pointerdown', () => {
-
+            
             this.scene.start('GameOver');
-
+            
         });
-        FileReader.readTileDataAsBooleanArray(this.cache.text.get('level1')).then((data: boolean[][]) => {
-            for (let y = 0; y < data.length; y++) {
-                for (let x = 0; x < data[y].length; x++) {
-                    if (data[y][x]) {
-                        const tileX = x * CONSTANTS.TERRAIN_TILE_SIZE + CONSTANTS.TERRAIN_TILE_SIZE / 2;
-                        const tileY = y * CONSTANTS.TERRAIN_TILE_SIZE + CONSTANTS.TERRAIN_TILE_SIZE / 2;
-                        const platformTile = new Ground(this, tileX, tileY, CONSTANTS.PLATFORM);
-                        this.add.existing(platformTile);
-                    }
+        let data = FileReader.readTileDataAsBooleanArray(this.cache.text.get('level1'))
+        for (let y = 0; y < data.length; y++) {
+            for (let x = 0; x < data[y].length; x++) {
+                if (data[y][x]) {
+                    const tileX = x * CONSTANTS.TERRAIN_TILE_SIZE + CONSTANTS.TERRAIN_TILE_SIZE / 2;
+                    const tileY = y * CONSTANTS.TERRAIN_TILE_SIZE + CONSTANTS.TERRAIN_TILE_SIZE / 2;
+                    const platformTile = new Ground(this, tileX, tileY, CONSTANTS.PLATFORM);
+                    this.add.existing(platformTile);
                 }
             }
-        })
+        }
+        this.spawnPlayer();
     }
 
     update(time: number, delta: number): void {
@@ -114,10 +113,11 @@ export class Game extends Scene
     }
 
     spawnPlayer() {
-        this.player1 = new Player(this, CONSTANTS.WINDOW_WIDTH / 2 + CONSTANTS.TERRAIN_TILE_SIZE, CONSTANTS.WINDOW_HEIGHT - CONSTANTS.TERRAIN_TILE_SIZE * 2, CONSTANTS.PLAYER);
+        this.player1 = new Player(this, CONSTANTS.TERRAIN_TILE_SIZE, CONSTANTS.WINDOW_HEIGHT - CONSTANTS.TERRAIN_TILE_SIZE - CONSTANTS.PLAYER_TILE_SIZE / 2 , CONSTANTS.PLAYER);
         this.player1.player.anims.play(CONSTANTS.PLAYER_IDLE);
-        this.player2 = new Player(this, CONSTANTS.WINDOW_WIDTH / 2 - CONSTANTS.TERRAIN_TILE_SIZE, CONSTANTS.WINDOW_HEIGHT - CONSTANTS.TERRAIN_TILE_SIZE * 2, CONSTANTS.PLAYER);
+        this.player2 = new Player(this, CONSTANTS.WINDOW_WIDTH - CONSTANTS.TERRAIN_TILE_SIZE, CONSTANTS.WINDOW_HEIGHT - CONSTANTS.TERRAIN_TILE_SIZE - CONSTANTS.PLAYER_TILE_SIZE / 2 , CONSTANTS.PLAYER);
         this.player2.player.anims.play(CONSTANTS.PLAYER_IDLE);
+        this.player2.player.flipX = true; // Flip player 2 to face left
         //this.player2.player.tint = 0x0000ff; // Change color for player 2
     }
 }
