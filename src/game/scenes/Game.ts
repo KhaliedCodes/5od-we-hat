@@ -1,13 +1,13 @@
 import { Scene } from 'phaser';
-
+import Laser from '../../obstacles/laser';
 export class Game extends Scene
 {
     camera: Phaser.Cameras.Scene2D.Camera;
     background: Phaser.GameObjects.Image;
     msg_text : Phaser.GameObjects.Text;
+    laserGroup!: Phaser.GameObjects.Group;
 
-    constructor ()
-    {
+    constructor() {
         super('Game');
     }
 
@@ -30,6 +30,16 @@ export class Game extends Scene
 
             this.scene.start('GameOver');
 
+        });
+
+        const laser = new Laser(this, 400, 300, 'right', 0xff2222);
+        
+        this.laserGroup = this.add.group();
+        this.laserGroup.add(laser);
+
+
+        this.physics.add.overlap(this.player, laser, () => {
+            this.scene.start('GameOver');
         });
     }
 }
