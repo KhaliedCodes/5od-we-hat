@@ -36,6 +36,8 @@ export class Preloader extends Scene
         this.load.image('logo', 'logo.png');
 
         this.load.spritesheet(CONSTANTS.PLAYER, CONSTANTS.PLAYER_TEXTURE_PATH, { frameWidth: CONSTANTS.PLAYER_TILE_SIZE, frameHeight: CONSTANTS.PLAYER_TILE_SIZE });
+        this.load.image(CONSTANTS.PLATFORM, CONSTANTS.PLATFORM_TEXTURE_PATH);
+        this.load.text('level1', 'level1.tmj');
     }
 
     create ()

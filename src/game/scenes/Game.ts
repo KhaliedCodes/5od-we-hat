@@ -1,6 +1,8 @@
 import { Scene } from 'phaser';
 import { CONSTANTS } from '../../constants';
 import { Player } from '../objects/Player';
+import { Ground } from '../objects/ground';
+import { FileReader } from '../utils/fileReader';
 
 export class Game extends Scene
 {
@@ -25,8 +27,6 @@ export class Game extends Scene
         this.camera = this.cameras.main;
         this.camera.setBackgroundColor(0x00ff00);
 
-        this.background = this.add.image(512, 384, 'background');
-        this.background.setAlpha(0.5);
 
         this.msg_text = this.add.text(512, 384, 'Make something fun!\nand share it with us:\nsupport@phaser.io', {
             fontFamily: 'Arial Black', fontSize: 38, color: '#ffffff',
@@ -48,6 +48,18 @@ export class Game extends Scene
             this.scene.start('GameOver');
 
         });
+        FileReader.readTileDataAsBooleanArray(this.cache.text.get('level1')).then((data: boolean[][]) => {
+            for (let y = 0; y < data.length; y++) {
+                for (let x = 0; x < data[y].length; x++) {
+                    if (data[y][x]) {
+                        const tileX = x * CONSTANTS.TERRAIN_TILE_SIZE + CONSTANTS.TERRAIN_TILE_SIZE / 2;
+                        const tileY = y * CONSTANTS.TERRAIN_TILE_SIZE + CONSTANTS.TERRAIN_TILE_SIZE / 2;
+                        const platformTile = new Ground(this, tileX, tileY, CONSTANTS.PLATFORM);
+                        this.add.existing(platformTile);
+                    }
+                }
+            }
+        })
     }
 
     update(time: number, delta: number): void {
