@@ -34,15 +34,7 @@ export class Game extends Scene
 
         });
 
-        const laser = new Laser(this, 400, 300, 'right', 0xff2222);
-        
-        this.laserGroup = this.add.group();
-        this.laserGroup.add(laser);
 
-
-        this.physics.add.overlap(this.player, laser, () => {
-            this.scene.start('GameOver');
-        });
         FileReader.readTileDataAsBooleanArray(this.cache.text.get('level1')).then((data: boolean[][]) => {
             for (let y = 0; y < data.length; y++) {
                 for (let x = 0; x < data[y].length; x++) {
@@ -51,6 +43,15 @@ export class Game extends Scene
                         const tileY = y * CONSTANTS.TERRAIN_TILE_SIZE + CONSTANTS.TERRAIN_TILE_SIZE / 2;
                         const platformTile = new Ground(this, tileX, tileY, CONSTANTS.PLATFORM);
                         this.add.existing(platformTile);
+                        const laser = new Laser(this, 400, 300, 'right', 0xff2222);
+        
+                        this.laserGroup = this.add.group();
+                        this.laserGroup.add(laser);
+
+
+                        this.physics.add.overlap(this.player, laser, () => {
+                            this.scene.start('GameOver');
+                        });
                     }
                 }
             }
