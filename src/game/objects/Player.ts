@@ -23,5 +23,23 @@ export class Player {
             frameRate:10,
             repeat:-1
         });
+        scene.anims.create({
+            key:CONSTANTS.PLAYER_IDLE_OUTLINE,
+            frames: scene.anims.generateFrameNumbers(CONSTANTS.PLAYER_OUTLINE,{start:0,end:0}),
+            frameRate:10,
+            repeat:-1
+        });
+        scene.anims.create({
+            key:CONSTANTS.PLAYER_RUN_OUTLINE,
+            frames: scene.anims.generateFrameNumbers(CONSTANTS.PLAYER_OUTLINE,{start:24,end:27}),
+            frameRate:10,
+            repeat:-1
+        });
+        scene.anims.create({
+            key:CONSTANTS.PLAYER_DEATH_OUTLINE,
+            frames: scene.anims.generateFrameNumbers(CONSTANTS.PLAYER_OUTLINE,{start:40,end:46}),
+            frameRate:10,
+            repeat:-1
+        });
     }
 }

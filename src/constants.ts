@@ -6,8 +6,13 @@ export const CONSTANTS = {
     PLATFORM: 'platform',
     PLATFORM_TEXTURE_PATH: 'tile.png',
     PLAYER: 'player',
+    PLAYER_OUTLINE: 'playerOutline',
     PLAYER_TEXTURE_PATH: 'Players/No Outlines/players blue x3.png',
+    PLAYER_OUTLINE_TEXTURE_PATH: 'Players/players blue x3.png',
     PLAYER_IDLE: 'playerIdle',
     PLAYER_RUN: 'playerRun',
     PLAYER_DEATH: 'playerDeath',
+    PLAYER_IDLE_OUTLINE: 'playerIdleOutline',
+    PLAYER_RUN_OUTLINE: 'playerRunOutline',
+    PLAYER_DEATH_OUTLINE: 'playerDeathOutline',
 }
