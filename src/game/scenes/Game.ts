@@ -16,7 +16,6 @@ export class Game extends Scene
     keyA?: Phaser.Input.Keyboard.Key;
     keyS?: Phaser.Input.Keyboard.Key;
     keyD?: Phaser.Input.Keyboard.Key;
-    keyE?: Phaser.Input.Keyboard.Key;
     p1hasOutline: boolean = false;
     p2hasOutline: boolean = true;
     emptyPlatforms: Ground[] = [];
@@ -37,10 +36,17 @@ export class Game extends Scene
         this.keyA = this.input?.keyboard?.addKey("A");
         this.keyS = this.input?.keyboard?.addKey("S");
         this.keyD = this.input?.keyboard?.addKey("D");
-        this.keyE = this.input?.keyboard?.addKey("E");
         this.input?.keyboard?.on('keydown-E', () => {
-            this.p1hasOutline = !this.p1hasOutline;
-            this.p2hasOutline = !this.p2hasOutline;
+            if (this.p2hasOutline) {
+                this.p1hasOutline = true;
+                this.p2hasOutline = false;
+            }
+        });
+        this.input?.keyboard?.on('keydown-CTRL', () => {
+            if (this.p1hasOutline) {
+                this.p1hasOutline = false;
+                this.p2hasOutline = true;
+            }
         });
 
         let data = FileReader.readTileDataAsBooleanArray(this.cache.text.get('level1'))
@@ -71,58 +77,10 @@ export class Game extends Scene
     
     update(time: number, delta: number): void {
         //#region Player2 Movement
-        if (this.keyA?.isDown) {
-            this.player2.player.setVelocityX(-160);
-            this.player2.player.flipX = true;
-            this.player2.player.anims.play(this.p1hasOutline ? CONSTANTS.PLAYER_RUN_OUTLINE : CONSTANTS.PLAYER_RUN, true);
-        }
-        else if (this.keyD?.isDown) {
-            this.player2.player.setVelocityX(160);
-            this.player2.player.flipX = false;
-            this.player2.player.anims.play(this.p1hasOutline ? CONSTANTS.PLAYER_RUN_OUTLINE : CONSTANTS.PLAYER_RUN, true);
-        }else{
-            this.player2.player.setVelocityX(0);
-        }
-        if (this.keyW?.isDown) {
-            this.player2.player.setVelocityY(-160);
-            this.player2.player.anims.play(this.p1hasOutline ? CONSTANTS.PLAYER_RUN_OUTLINE : CONSTANTS.PLAYER_RUN, true);
-        }
-        else if (this.keyS?.isDown) {
-            this.player2.player.setVelocityY(160);
-            this.player2.player.anims.play(this.p1hasOutline ? CONSTANTS.PLAYER_RUN_OUTLINE : CONSTANTS.PLAYER_RUN, true);
-        }else{
-            this.player2.player.setVelocityY(0);
-        }
-        if (this.player2.player.body?.velocity.x === 0 && this.player2.player.body?.velocity.y === 0){
-            this.player2.player.anims.play(this.p1hasOutline ? CONSTANTS.PLAYER_IDLE_OUTLINE : CONSTANTS.PLAYER_IDLE, true);
-        }
+        this.movePlayer(this.player2, this.p2hasOutline, this.keyW, this.keyS, this.keyA, this.keyD);
         //#endregion
         //#region Player1 Movement
-        if (this.cursor?.left.isDown) {
-            this.player1.player.setVelocityX(-160);
-            this.player1.player.flipX = true;
-            this.player1.player.anims.play(this.p2hasOutline ? CONSTANTS.PLAYER_RUN_OUTLINE : CONSTANTS.PLAYER_RUN, true);
-        }
-        else if (this.cursor?.right.isDown) {
-            this.player1.player.setVelocityX(160);
-            this.player1.player.flipX = false;
-            this.player1.player.anims.play(this.p2hasOutline ? CONSTANTS.PLAYER_RUN_OUTLINE : CONSTANTS.PLAYER_RUN, true);
-        }else{
-            this.player1.player.setVelocityX(0);
-        }
-        if (this.cursor?.up.isDown) {
-            this.player1.player.setVelocityY(-160);
-            this.player1.player.anims.play(this.p2hasOutline ? CONSTANTS.PLAYER_RUN_OUTLINE : CONSTANTS.PLAYER_RUN, true);
-        }
-        else if (this.cursor?.down.isDown) {
-            this.player1.player.setVelocityY(160);
-            this.player1.player.anims.play(this.p2hasOutline ? CONSTANTS.PLAYER_RUN_OUTLINE : CONSTANTS.PLAYER_RUN, true);
-        }else{
-            this.player1.player.setVelocityY(0);
-        }
-        if (this.player1.player.body?.velocity.x === 0 && this.player1.player.body?.velocity.y === 0){
-            this.player1.player.anims.play(this.p2hasOutline ? CONSTANTS.PLAYER_IDLE_OUTLINE : CONSTANTS.PLAYER_IDLE, true);
-        }
+        this.movePlayer(this.player1, this.p1hasOutline, this.cursor?.up, this.cursor?.down, this.cursor?.left, this.cursor?.right);
         //#endregion
     }
 
@@ -136,5 +94,32 @@ export class Game extends Scene
         this.player2 = new Player(this, CONSTANTS.TERRAIN_TILE_SIZE, CONSTANTS.WINDOW_HEIGHT - CONSTANTS.TERRAIN_TILE_SIZE - CONSTANTS.PLAYER_TILE_SIZE / 2 , CONSTANTS.PLAYER);
         this.player2.player.anims.play(CONSTANTS.PLAYER_IDLE_OUTLINE);
         this.player2.player.tint = 0x5555ff; // Change color for player 2
+    }
+    movePlayer(player: Player, hasOutline: boolean, keyup?: Phaser.Input.Keyboard.Key, keydown?: Phaser.Input.Keyboard.Key, keyleft?: Phaser.Input.Keyboard.Key, keyright?: Phaser.Input.Keyboard.Key) {
+        const playeridle = hasOutline ? CONSTANTS.PLAYER_IDLE_OUTLINE : CONSTANTS.PLAYER_IDLE;
+        const playerrun = hasOutline ? CONSTANTS.PLAYER_RUN_OUTLINE : CONSTANTS.PLAYER_RUN;
+        if (keyleft?.isDown) {
+            player.player.setVelocityX(-160);
+            player.player.flipX = true;
+        }
+        else if (keyright?.isDown) {
+            player.player.setVelocityX(160);
+            player.player.flipX = false;
+        }else{
+            player.player.setVelocityX(0);
+        }
+        if (keyup?.isDown) {
+            player.player.setVelocityY(-160);
+        }
+        else if (keydown?.isDown) {
+            player.player.setVelocityY(160);
+        }else{
+            player.player.setVelocityY(0);
+        }
+        if (player.player.body?.velocity.x === 0 && player.player.body?.velocity.y === 0){
+            player.player.anims.play(playeridle, true);
+        }else{
+            player.player.anims.play(playerrun, true);
+        }
     }
 }
