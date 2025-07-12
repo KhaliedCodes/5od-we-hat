@@ -19,6 +19,7 @@ export class Game extends Scene
     keyE?: Phaser.Input.Keyboard.Key;
     p1hasOutline: boolean = false;
     p2hasOutline: boolean = true;
+    emptyPlatforms: Ground[] = [];
 
     constructor ()
     {
@@ -31,13 +32,6 @@ export class Game extends Scene
         this.camera.setBackgroundColor(0x00ff00);
 
 
-        this.msg_text = this.add.text(512, 384, 'Make something fun!\nand share it with us:\nsupport@phaser.io', {
-            fontFamily: 'Arial Black', fontSize: 38, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
-            align: 'center'
-        });
-        this.msg_text.setOrigin(0.5);
-
         this.cursor = this.input?.keyboard?.createCursorKeys();
         this.keyW = this.input?.keyboard?.addKey("W");
         this.keyA = this.input?.keyboard?.addKey("A");
@@ -48,12 +42,7 @@ export class Game extends Scene
             this.p1hasOutline = !this.p1hasOutline;
             this.p2hasOutline = !this.p2hasOutline;
         });
-        
-        this.input.once('pointerdown', () => {
-            
-            this.scene.start('GameOver');
-            
-        });
+
         let data = FileReader.readTileDataAsBooleanArray(this.cache.text.get('level1'))
         for (let y = 0; y < data.length; y++) {
             for (let x = 0; x < data[y].length; x++) {
@@ -62,10 +51,22 @@ export class Game extends Scene
                     const tileY = y * CONSTANTS.TERRAIN_TILE_SIZE + CONSTANTS.TERRAIN_TILE_SIZE / 2;
                     const platformTile = new Ground(this, tileX, tileY, CONSTANTS.PLATFORM);
                     this.add.existing(platformTile);
+                } else {
+                    const tileX = x * CONSTANTS.TERRAIN_TILE_SIZE + CONSTANTS.TERRAIN_TILE_SIZE / 2;
+                    const tileY = y * CONSTANTS.TERRAIN_TILE_SIZE + CONSTANTS.TERRAIN_TILE_SIZE / 2;
+                    const emptyPlatform = new Ground(this, tileX, tileY, CONSTANTS.PLATFORM);
+                    this.physics.add.existing(emptyPlatform);
+                    emptyPlatform.setImmovable(true);
+                    this.emptyPlatforms.push(emptyPlatform);
                 }
             }
         }
         this.spawnPlayer();
+        this.emptyPlatforms.forEach(platform => {
+            this.physics.add.collider(this.player1.player, platform);
+            this.physics.add.collider(this.player2.player, platform);
+        })
+
     }
     
     update(time: number, delta: number): void {
