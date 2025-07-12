@@ -2,6 +2,7 @@ import { Scene } from 'phaser';
 import { CONSTANTS } from '../../constants';
 import { Player } from '../objects/Player';
 import { Ground } from '../objects/ground';
+import { Ball } from "../objects/ball";
 import { FileReader } from '../utils/fileReader';
 
 export class Game extends Scene
@@ -11,13 +12,16 @@ export class Game extends Scene
     msg_text : Phaser.GameObjects.Text;
     player1: Player;
     player2: Player;
+    ballTarget: Player;
+    ballmoving: boolean = false;
+    ball: Ball;
     cursor?: Phaser.Types.Input.Keyboard.CursorKeys;
     keyW?: Phaser.Input.Keyboard.Key;
     keyA?: Phaser.Input.Keyboard.Key;
     keyS?: Phaser.Input.Keyboard.Key;
     keyD?: Phaser.Input.Keyboard.Key;
-    p1hasOutline: boolean = false;
-    p2hasOutline: boolean = true;
+    p1hasOutline: boolean = true;
+    p2hasOutline: boolean = false;
     emptyPlatforms: Ground[] = [];
 
     constructor ()
@@ -29,26 +33,14 @@ export class Game extends Scene
     {
         this.camera = this.cameras.main;
         this.camera.setBackgroundColor(0x00ff00);
-
-
+        
+        
         this.cursor = this.input?.keyboard?.createCursorKeys();
         this.keyW = this.input?.keyboard?.addKey("W");
         this.keyA = this.input?.keyboard?.addKey("A");
         this.keyS = this.input?.keyboard?.addKey("S");
         this.keyD = this.input?.keyboard?.addKey("D");
-        this.input?.keyboard?.on('keydown-E', () => {
-            if (this.p2hasOutline) {
-                this.p1hasOutline = true;
-                this.p2hasOutline = false;
-            }
-        });
-        this.input?.keyboard?.on('keydown-CTRL', () => {
-            if (this.p1hasOutline) {
-                this.p1hasOutline = false;
-                this.p2hasOutline = true;
-            }
-        });
-
+        
         let data = FileReader.readTileDataAsBooleanArray(this.cache.text.get('level1'))
         for (let y = 0; y < data.length; y++) {
             for (let x = 0; x < data[y].length; x++) {
@@ -67,32 +59,66 @@ export class Game extends Scene
                 }
             }
         }
+        this.ball = new Ball(this, CONSTANTS.WINDOW_WIDTH - 3 * CONSTANTS.TERRAIN_TILE_SIZE, CONSTANTS.WINDOW_HEIGHT - CONSTANTS.TERRAIN_TILE_SIZE, CONSTANTS.BALL);
+        this.ball.ball.setVisible(false);
         this.spawnPlayer();
+        
+        this.input?.keyboard?.on('keydown-E', () => {
+            if (!this.p2hasOutline) {
+                return;
+            }
+            this.ball.ball.setVisible(true);
+            this.ball.ball.setPosition(this.player2.player.x, this.player2.player.y + CONSTANTS.PLAYER_TILE_SIZE / 4);
+            this.ballTarget = this.player1;
+            this.ballmoving = true;
+        });
+        this.input?.keyboard?.on('keydown-CTRL', () => {
+            if (!this.p1hasOutline) {
+                return;
+            }
+            this.ball.ball.setVisible(true);
+            this.ball.ball.setPosition(this.player1.player.x, this.player1.player.y + CONSTANTS.PLAYER_TILE_SIZE / 4);
+            this.ballTarget = this.player2;
+            this.ballmoving = true;
+        });
         this.emptyPlatforms.forEach(platform => {
             this.physics.add.collider(this.player1.player, platform);
             this.physics.add.collider(this.player2.player, platform);
         })
-
+        
     }
     
     update(time: number, delta: number): void {
-        //#region Player2 Movement
         this.movePlayer(this.player2, this.p2hasOutline, this.keyW, this.keyS, this.keyA, this.keyD);
-        //#endregion
-        //#region Player1 Movement
         this.movePlayer(this.player1, this.p1hasOutline, this.cursor?.up, this.cursor?.down, this.cursor?.left, this.cursor?.right);
-        //#endregion
+        if (this.ballmoving) {
+            if (Phaser.Math.Distance.Between(this.ballTarget.player.x, this.ballTarget.player.y + CONSTANTS.PLAYER_TILE_SIZE / 4, this.ball.ball.x, this.ball.ball.y) > CONSTANTS.PLAYER_TILE_SIZE / 4) {
+                this.tweens.add({
+                    targets: this.ball.ball,
+                    x: this.ballTarget.player.x,
+                    y: this.ballTarget.player.y + CONSTANTS.PLAYER_TILE_SIZE / 4,
+                    duration: 1000,
+                    ease: 'Power2',
+                });
+            }else {
+                this.ball.ball.setVelocity(0, 0);
+                this.p1hasOutline = this.player1 === this.ballTarget;
+                this.p2hasOutline = this.player2 === this.ballTarget;
+                this.ball.ball.setVisible(false);
+                this.ballmoving = false;
+            }
+        }
     }
 
     spawnPlayer() {
         this.player1 = new Player(this, CONSTANTS.WINDOW_WIDTH - CONSTANTS.TERRAIN_TILE_SIZE, CONSTANTS.WINDOW_HEIGHT - CONSTANTS.TERRAIN_TILE_SIZE - CONSTANTS.PLAYER_TILE_SIZE / 2 , CONSTANTS.PLAYER);
-        this.player1.player.anims.play(CONSTANTS.PLAYER_IDLE);
+        this.player1.player.anims.play(CONSTANTS.PLAYER_IDLE_OUTLINE);
         this.player1.player.flipX = true;
         this.player1.player.tint = 0xff5555; // Change color for player 1
 
          // Spawn Player 2
         this.player2 = new Player(this, CONSTANTS.TERRAIN_TILE_SIZE, CONSTANTS.WINDOW_HEIGHT - CONSTANTS.TERRAIN_TILE_SIZE - CONSTANTS.PLAYER_TILE_SIZE / 2 , CONSTANTS.PLAYER);
-        this.player2.player.anims.play(CONSTANTS.PLAYER_IDLE_OUTLINE);
+        this.player2.player.anims.play(CONSTANTS.PLAYER_IDLE);
         this.player2.player.tint = 0x5555ff; // Change color for player 2
     }
     movePlayer(player: Player, hasOutline: boolean, keyup?: Phaser.Input.Keyboard.Key, keydown?: Phaser.Input.Keyboard.Key, keyleft?: Phaser.Input.Keyboard.Key, keyright?: Phaser.Input.Keyboard.Key) {

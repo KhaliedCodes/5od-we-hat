@@ -5,6 +5,8 @@ export const CONSTANTS = {
     PLAYER_TILE_SIZE: 32*3,
     PLATFORM: 'platform',
     PLATFORM_TEXTURE_PATH: 'tile.png',
+    BALL : 'ball',
+    BALL_TEXTURE_PATH: 'ball.png',
     PLAYER: 'player',
     PLAYER_OUTLINE: 'playerOutline',
     PLAYER_TEXTURE_PATH: 'Players/No Outlines/players blue x3.png',
