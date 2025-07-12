@@ -1,4 +1,5 @@
 import { Scene } from 'phaser';
+import { CONSTANTS } from '../../constants';
 
 export class Preloader extends Scene
 {
@@ -35,6 +36,8 @@ export class Preloader extends Scene
         this.load.image('logo', 'logo.png');
 
         this.load.image('laserBase', '14.png');
+        this.load.image(CONSTANTS.PLATFORM, CONSTANTS.PLATFORM_TEXTURE_PATH);
+        this.load.text('level1', 'level1.tmj');
     }
 
     create ()
