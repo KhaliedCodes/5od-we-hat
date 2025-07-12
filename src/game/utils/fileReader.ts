@@ -5,7 +5,7 @@ export class FileReader {
      * Each cell is true if the value in the data array is not 0, otherwise false.
      * @param filePath Path to the JSON file.
      */
-    static async readTileDataAsBooleanArray(jsonContent: string): Promise<boolean[][]> {
+    static readTileDataAsBooleanArray(jsonContent: string): boolean[][] {
         const json = JSON.parse(jsonContent);
 
         // Assumes first layer is the one to read
