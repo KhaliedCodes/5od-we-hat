@@ -72,13 +72,11 @@ export class Game extends Scene
     update(time: number, delta: number): void {
         //#region Player2 Movement
         if (this.keyA?.isDown) {
-            console.log("A pressed");
             this.player2.player.setVelocityX(-160);
             this.player2.player.flipX = true;
             this.player2.player.anims.play(this.p1hasOutline ? CONSTANTS.PLAYER_RUN_OUTLINE : CONSTANTS.PLAYER_RUN, true);
         }
         else if (this.keyD?.isDown) {
-            console.log("D pressed");
             this.player2.player.setVelocityX(160);
             this.player2.player.flipX = false;
             this.player2.player.anims.play(this.p1hasOutline ? CONSTANTS.PLAYER_RUN_OUTLINE : CONSTANTS.PLAYER_RUN, true);
@@ -86,12 +84,10 @@ export class Game extends Scene
             this.player2.player.setVelocityX(0);
         }
         if (this.keyW?.isDown) {
-            console.log("W pressed");
             this.player2.player.setVelocityY(-160);
             this.player2.player.anims.play(this.p1hasOutline ? CONSTANTS.PLAYER_RUN_OUTLINE : CONSTANTS.PLAYER_RUN, true);
         }
         else if (this.keyS?.isDown) {
-            console.log("S pressed");
             this.player2.player.setVelocityY(160);
             this.player2.player.anims.play(this.p1hasOutline ? CONSTANTS.PLAYER_RUN_OUTLINE : CONSTANTS.PLAYER_RUN, true);
         }else{

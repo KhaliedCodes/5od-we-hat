@@ -5,6 +5,9 @@ export class Player {
     player: Phaser.Physics.Arcade.Sprite;
     constructor(scene: Scene, x: number, y: number, texture: string) {
         this.player = scene.physics.add.sprite(x,y,texture);
+        this.player.body?.setSize(CONSTANTS.PLAYER_TILE_SIZE/3, CONSTANTS.PLAYER_TILE_SIZE/2);
+        this.player.body?.setOffset(CONSTANTS.PLAYER_TILE_SIZE/3, CONSTANTS.PLAYER_TILE_SIZE/2);
+        this.player.setCollideWorldBounds(true);
         scene.anims.create({
             key:CONSTANTS.PLAYER_IDLE,
             frames: scene.anims.generateFrameNumbers(CONSTANTS.PLAYER,{start:0,end:0}),
