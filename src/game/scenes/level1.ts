@@ -6,6 +6,7 @@ import { Ground } from '../objects/ground';
 import { Ball } from "../objects/Ball";
 import { WinTile } from '../objects/WinTile';
 import { FileReader } from '../utils/fileReader';
+import { GameTimer } from '../../constants';
 
 export class levelone extends Scene
 {
@@ -34,8 +35,24 @@ export class levelone extends Scene
         super('levelone');
     }
 
+    private timerText!: Phaser.GameObjects.Text;
+    private timerEvent!: Phaser.Time.TimerEvent;
     create ()
     {
+        GameTimer.startTime = Date.now();
+        this.timerText = this.add.text(this.cameras.main.centerX, this.cameras.main.height - 30, 'Time: 0', {
+            fontSize: '32px',
+            color: '#ffffff',
+        }).setOrigin(0.5);
+
+        this.timerEvent = this.time.addEvent({
+            delay: 1000,
+            loop: true,
+            callback: () => {
+                const elapsed = Math.floor((Date.now() - GameTimer.startTime) / 1000);
+                this.timerText.setText(`Time: ${elapsed}`);
+            }
+        });
         this.camera = this.cameras.main;
         this.camera.setBackgroundColor(0x0d0f18);
 

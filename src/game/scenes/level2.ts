@@ -6,7 +6,7 @@ import { Ground } from '../objects/ground';
 import { Ball } from "../objects/Ball";
 import { WinTile } from '../objects/WinTile';
 import { FileReader } from '../utils/fileReader';
-
+import { GameTimer } from '../../constants';
 export class leveltwo extends Scene {
   camera: Phaser.Cameras.Scene2D.Camera;
   background: Phaser.GameObjects.Image;
@@ -34,16 +34,31 @@ export class leveltwo extends Scene {
     super('leveltwo');
   }
 
+  private timerText!: Phaser.GameObjects.Text;
+  private timerEvent!: Phaser.Time.TimerEvent;
   create() {
     this.camera = this.cameras.main;
     this.camera.setBackgroundColor(0x0d0f18);
+    const currentElapsed = Math.floor((Date.now() - GameTimer.startTime) / 1000);
+    this.timerText = this.add.text(this.cameras.main.centerX, this.cameras.main.height - 30, `Time: ${currentElapsed}`, {
+        fontSize: '32px',
+        color: '#ffffff',
+    }).setOrigin(0.5);
 
+    this.timerEvent = this.time.addEvent({
+        delay: 1000,
+        loop: true,
+        callback: () => {
+            const elapsed = Math.floor((Date.now() - GameTimer.startTime) / 1000);
+            this.timerText.setText(`Time: ${elapsed}`);
+        }
+    });
     this.cursor = this.input?.keyboard?.createCursorKeys();
     this.keyW = this.input?.keyboard?.addKey("W");
     this.keyA = this.input?.keyboard?.addKey("A");
     this.keyS = this.input?.keyboard?.addKey("S");
     this.keyD = this.input?.keyboard?.addKey("D");
-
+    
     let data = FileReader.readTileDataAsBooleanArray(this.cache.text.get('level2'));
     for (let y = 0; y < data.length; y++) {
       for (let x = 0; x < data[y].length; x++) {
@@ -156,7 +171,8 @@ export class leveltwo extends Scene {
       this.physics.world.overlap(this.player1.player, this.winTile1.winTile) &&
       this.physics.world.overlap(this.player2.player, this.winTile2.winTile)
     ) {
-      this.scene.start('MainMenu');
+      GameTimer.endTime = Date.now();
+      this.scene.start('Win');
     }
 
     if (this.smokeEmitter1) {
