@@ -1,13 +1,14 @@
 import Phaser from 'phaser';
 
-export default class RotatingLaser extends Phaser.GameObjects.Rectangle {
-  private speed: number;
-  public radius: number;
+export default class RotatingLaser extends Phaser.GameObjects.Container {
+  private beam: Phaser.GameObjects.Rectangle;
+  private hitbox: Phaser.GameObjects.Rectangle;
+  private bodyRef: Phaser.Physics.Arcade.Body;
   private center: Phaser.Math.Vector2;
-  private angleDeg: number;
+  private angleDeg: number = 0;
+  private radius: number;
+  private speed: number;
   private clockwise: boolean;
-  private glow!: Phaser.GameObjects.Rectangle;
-  public hitbox!: Phaser.GameObjects.Rectangle;
 
   constructor(
     scene: Phaser.Scene,
@@ -15,62 +16,74 @@ export default class RotatingLaser extends Phaser.GameObjects.Rectangle {
     centerY: number,
     radius: number = 0,
     clockwise: boolean = true,
-    speed: number = 0.02,
+    speed: number = 0.03,
     color: number = 0xff2222
   ) {
-    const width = Math.sqrt(scene.scale.width ** 2 + scene.scale.height ** 2);
-    const height = 10;
-
-    // Main visual laser
-    super(scene, centerX, centerY, width, height, color);
-    this.setOrigin(0.5);
-    this.setAlpha(0.85);
-    this.setDepth(5);
+    super(scene, centerX, centerY);
     scene.add.existing(this);
+    scene.physics.add.existing(this);
 
-    // Glow effect
-    this.glow = scene.add.rectangle(centerX, centerY, width + 20, height + 20, color, 0.3);
-    this.glow.setOrigin(0.5);
-    this.glow.setDepth(4);
-
-    // Invisible hitbox for collision
-    this.hitbox = scene.add.rectangle(centerX, centerY, width, height);
-    scene.physics.add.existing(this.hitbox);
-    const body = this.hitbox.body as Phaser.Physics.Arcade.Body;
-    body.setAllowGravity(false);
-    body.setImmovable(true);
-    this.hitbox.setVisible(false);
-
-    // Movement setup
     this.center = new Phaser.Math.Vector2(centerX, centerY);
     this.radius = radius;
-    this.angleDeg = 0;
-    this.clockwise = clockwise;
     this.speed = speed;
+    this.clockwise = clockwise;
+
+    const beamWidth = 300;
+    const beamHeight = 10;
+
+    // Visual beam
+    this.beam = scene.add.rectangle(0, 0, beamWidth, beamHeight, color);
+    this.beam.setOrigin(0.5);
+
+    // Collider hitbox
+    this.hitbox = scene.add.rectangle(0, 0, beamWidth, beamHeight);
+    this.hitbox.setOrigin(0.5);
+    this.hitbox.setVisible(false);
+
+    this.add(this.beam);
+    this.add(this.hitbox);
+
+    // Set up physics body
+    scene.physics.add.existing(this.hitbox);
+    this.bodyRef = this.hitbox.body as Phaser.Physics.Arcade.Body;
+    this.bodyRef.setAllowGravity(false);
+    this.bodyRef.setImmovable(true);
   }
 
   preUpdate(time: number, delta: number) {
     this.angleDeg += (this.clockwise ? 1 : -1) * this.speed * delta;
     const rad = Phaser.Math.DegToRad(this.angleDeg);
 
-    if (this.radius > 0) {
-      this.x = this.center.x + Math.cos(rad) * this.radius;
-      this.y = this.center.y + Math.sin(rad) * this.radius;
-    }
+    // Laser rotates around a center point
+    const x = this.center.x + Math.cos(rad) * this.radius;
+    const y = this.center.y + Math.sin(rad) * this.radius;
 
-    this.rotation = rad;
-    this.glow.x = this.x;
-    this.glow.y = this.y;
-    this.glow.rotation = rad;
+    // Visual beam updates
+    this.setPosition(x, y);
+    this.setRotation(rad);
+    this.beam.setRotation(rad);
 
-    // Sync hitbox position (but not rotated)
-    this.hitbox.x = this.x;
-    this.hitbox.y = this.y;
+    // Update hitbox position (match beam center)
+    const hitboxX = x;
+    const hitboxY = y;
 
-    const body = this.hitbox.body as Phaser.Physics.Arcade.Body;
-    if (body) {
-      body.setSize(this.width, this.height); // keep thin
-      body.position.set(this.getTopLeft().x, this.getTopLeft().y); // sync to visual
-    }
+    this.hitbox.setPosition(hitboxX, hitboxY);
+    this.hitbox.setRotation(rad); // for visual debug if needed
+
+    // Simulate rotated body position: move top-left manually
+    const body = this.bodyRef;
+    const width = this.hitbox.width;
+    const height = this.hitbox.height;
+
+    const offsetX = Math.cos(rad) * (-width / 2) - Math.sin(rad) * (-height / 2);
+    const offsetY = Math.sin(rad) * (-width / 2) + Math.cos(rad) * (-height / 2);
+
+    body.setSize(width, height);
+    body.setOffset(0, 0); // reset offset
+    body.position.set(hitboxX + offsetX, hitboxY + offsetY);
+  }
+
+  getBody(): Phaser.Physics.Arcade.Body {
+    return this.bodyRef;
   }
 }
