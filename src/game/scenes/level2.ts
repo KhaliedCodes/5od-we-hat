@@ -38,6 +38,9 @@ export class leveltwo extends Scene {
   private timerText!: Phaser.GameObjects.Text;
   private timerEvent!: Phaser.Time.TimerEvent;
   create() {
+    this.p1hasOutline = true;
+    this.p2hasOutline = false;
+    this.ballTarget = this.player2;
     this.camera = this.cameras.main;
     this.camera.setBackgroundColor(0x0d0f18);
     const currentElapsed = Math.floor((Date.now() - GameTimer.startTime) / 1000);
@@ -190,10 +193,10 @@ export class leveltwo extends Scene {
           duration: 1000,
           ease: 'Power2',
         });
-      } else {
+    } else {
         this.ball.ball.setVelocity(0, 0);
-        this.p1hasOutline = this.player1 === this.ballTarget;
-        this.p2hasOutline = this.player2 === this.ballTarget;
+        this.p1hasOutline = !this.p1hasOutline;
+        this.p2hasOutline = !this.p2hasOutline;
         this.ball.ball.setVisible(false);
         this.ballmoving = false;
       }
