@@ -107,10 +107,10 @@ export class leveltwo extends Scene {
     this.spawnPlayer();
 
     // ✅ Regular static lasers
-    const laser1 = new Laser(this, 300, 300, 'right', 0xff2222, 600);
-    const laser2 = new Laser(this, 300, 400, 'right', 0xff2222, 600);
-    const laser3 = new Laser(this, 790, 500, 'left', 0xff2222, 600);
-    const laser4 = new Laser(this, 790, 600, 'left', 0xff2222, 600);
+    const laser1 = new Laser(this, 0, 300, 'right', 0xff2222, 200);
+    const laser2 = new Laser(this, 0, 400, 'right', 0xff2222, 200);
+    const laser3 = new Laser(this, 645, 500, 'right', 0xff2222, 100);
+    const laser4 = new Laser(this, 645, 600, 'right', 0xff2222, 100);
     const laser5 = new Laser(this, 544, 200, 'left', 0xff2222, 1100);
 
     this.laserGroup = this.add.group([laser1, laser2, laser3, laser4, laser5]);
