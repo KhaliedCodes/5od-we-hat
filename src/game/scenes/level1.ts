@@ -39,6 +39,9 @@ export class levelone extends Scene
     private timerEvent!: Phaser.Time.TimerEvent;
     create ()
     {
+        this.p1hasOutline = true;
+        this.p2hasOutline = false;
+        this.ballTarget = this.player2;
         GameTimer.startTime = Date.now();
         this.timerText = this.add.text(this.cameras.main.centerX, this.cameras.main.height - 30, 'Time: 0', {
             fontSize: '32px',
@@ -180,8 +183,8 @@ export class levelone extends Scene
                 });
             }else {
                 this.ball.ball.setVelocity(0, 0);
-                this.p1hasOutline = this.player1 === this.ballTarget;
-                this.p2hasOutline = this.player2 === this.ballTarget;
+                this.p1hasOutline = !this.p1hasOutline;
+                this.p2hasOutline = !this.p2hasOutline;
                 this.ball.ball.setVisible(false);
                 this.ballmoving = false;
             }
