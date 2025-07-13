@@ -75,7 +75,7 @@ export class MainMenu extends Phaser.Scene {
     });
 
     // 🔘 Create styled button
-    const createButton = (offsetY: number, label: string, emoji: string, onClick: () => void) => {
+    const createButton = (offsetY: number, label: string, onClick: () => void) => {
       const y = height / 2 + offsetY;
 
       const btn = this.add.rectangle(width / 2, y, 240, 50, 0x111111, 0.8)
@@ -83,7 +83,7 @@ export class MainMenu extends Phaser.Scene {
         .setInteractive({ useHandCursor: true })
         .setOrigin(0.5);
 
-      const txt = this.add.text(width / 2, y, `${emoji} ${label}`, {
+      const txt = this.add.text(width / 2, y, ` ${label}`, {
         fontSize: '18px',
         fontFamily: 'monospace',
         color: '#ffffff'
@@ -121,9 +121,10 @@ export class MainMenu extends Phaser.Scene {
     };
 
     // 🕹 Add buttons
-    createButton(-60, 'Start Game', '▶', () => this.scene.start('Game'));
-    createButton(0, 'Settings', '🔊', () => this.scene.start('Settings'));
-    createButton(60, 'Controls', '🎮', () => this.scene.start('Controls'));
+    createButton(-60, 'Start Game', () => this.scene.start('Game'));
+    createButton(0, 'Settings', () => this.scene.start('Settings'));
+    createButton(60, 'Controls', () => this.scene.start('Controls'));
+    createButton(120, 'Credits', () => this.scene.start('Credits'));
   }
 
   update(time: number, delta: number) {
