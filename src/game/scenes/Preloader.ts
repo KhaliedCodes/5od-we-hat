@@ -43,6 +43,12 @@ export class Preloader extends Scene
         this.load.image(CONSTANTS.WINTILE, CONSTANTS.WINTILE_TEXTURE_PATH);
         this.load.audio('bgm', 'Music/Music_by_Vlad_Krotov_from_Pixabay.mp3'); // path to your music file
 
+        // Create a white square texture (10x10 size, adjust as needed)
+        const gfx = this.make.graphics({ x: 0, y: 0});
+        gfx.fillStyle(0xffffff, 1);
+        gfx.fillRect(0, 0, 10, 10);  // 10x10 white square
+        gfx.generateTexture('whiteSquare', 10, 10);
+        gfx.destroy(); // cleanup
     }
 
     create ()
