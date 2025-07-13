@@ -40,7 +40,7 @@ export class GameOver extends Scene {
     });
 
     // ✨ Subtitle with subtle flicker
-    this.subtitleText = this.add.text(width / 2, height / 2 + 30, 'Tap or Click to Continue', {
+    this.subtitleText = this.add.text(width / 2, height / 2 + 30, 'Click to Return to Main Menu', {
       fontSize: '20px',
       fontFamily: 'monospace',
       color: '#ffffff'
