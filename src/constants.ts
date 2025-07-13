@@ -22,3 +22,12 @@ export const CONSTANTS = {
     PLAYER_RUN_OUTLINE: 'playerRunOutline',
     PLAYER_DEATH_OUTLINE: 'playerDeathOutline',
 }
+
+export const GameTimer = {
+    startTime: 0,
+    endTime: 0,
+    getElapsedTime: function () {
+        if (!this.startTime || !this.endTime) return 0;
+        return (this.endTime - this.startTime) / 1000;
+    }
+};
