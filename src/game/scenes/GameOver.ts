@@ -5,7 +5,7 @@ export class GameOver extends Scene {
   private background!: Phaser.GameObjects.Rectangle;
   private gameoverText!: Phaser.GameObjects.Text;
   private subtitleText!: Phaser.GameObjects.Text;
-  private particles!: Phaser.GameObjects.Particles.ParticleEmitterManager;
+  private particles!: Phaser.GameObjects.Particles.ParticleEmitter;
 
   constructor() {
     super('GameOver');
@@ -72,7 +72,7 @@ export class GameOver extends Scene {
     });
 
     // 🎮 Return to menu
-    this.input.once('pointerdown', () => {
+    this.input.once('pointerup', () => {
       this.scene.start('MainMenu');
     });
   }
