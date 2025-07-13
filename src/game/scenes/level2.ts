@@ -171,7 +171,7 @@ export class leveltwo extends Scene
                 this.ballmoving = false;
             }
         }
-        if (this.physics.world.overlap(this.player1.player, this.winTile2.winTile) && this.physics.world.overlap(this.player2.player, this.winTile1.winTile)) {
+        if (this.physics.world.overlap(this.player1.player, this.winTile1.winTile) && this.physics.world.overlap(this.player2.player, this.winTile2.winTile)) {
             // TODO: replace with next level
             this.scene.start('MainMenu');
         }
