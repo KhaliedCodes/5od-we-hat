@@ -62,6 +62,7 @@ export class levelone extends Scene
                     const tileX = x * CONSTANTS.TERRAIN_TILE_SIZE + CONSTANTS.TERRAIN_TILE_SIZE / 2;
                     const tileY = y * CONSTANTS.TERRAIN_TILE_SIZE + CONSTANTS.TERRAIN_TILE_SIZE / 2;
                     const platformTile = new Ground(this, tileX, tileY, CONSTANTS.PLATFORM);
+                    this.physics.add.existing(platformTile);
                     this.add.existing(platformTile);
                 } else {
                     const tileX = x * CONSTANTS.TERRAIN_TILE_SIZE + CONSTANTS.TERRAIN_TILE_SIZE / 2;
@@ -146,7 +147,6 @@ export class levelone extends Scene
             this.physics.add.collider(this.player1.player, platform);
             this.physics.add.collider(this.player2.player, platform);
         })
-        
     }
     
     update(time: number, delta: number): void {

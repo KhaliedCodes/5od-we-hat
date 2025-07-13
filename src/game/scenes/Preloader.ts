@@ -38,6 +38,7 @@ export class Preloader extends Scene
         this.load.spritesheet(CONSTANTS.PLAYER, CONSTANTS.PLAYER_TEXTURE_PATH, { frameWidth: CONSTANTS.PLAYER_TILE_SIZE, frameHeight: CONSTANTS.PLAYER_TILE_SIZE });
         this.load.spritesheet(CONSTANTS.PLAYER_OUTLINE, CONSTANTS.PLAYER_OUTLINE_TEXTURE_PATH, { frameWidth: CONSTANTS.PLAYER_TILE_SIZE, frameHeight: CONSTANTS.PLAYER_TILE_SIZE });
         this.load.image(CONSTANTS.PLATFORM, CONSTANTS.PLATFORM_TEXTURE_PATH);
+        this.load.image(CONSTANTS.FALLING_PLATFORM, CONSTANTS.FALLING_PLATFORM_TEXTURE_PATH);
         this.load.text('level1', 'level1.tmj');
         this.load.text('level2', 'level2.tmj');
         this.load.image(CONSTANTS.BALL, CONSTANTS.BALL_TEXTURE_PATH);
