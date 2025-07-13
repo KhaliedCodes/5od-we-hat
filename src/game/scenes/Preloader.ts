@@ -41,6 +41,12 @@ export class Preloader extends Scene
         this.load.text('level1', 'level1.tmj');
         this.load.image(CONSTANTS.BALL, CONSTANTS.BALL_TEXTURE_PATH);
         this.load.image(CONSTANTS.WINTILE, CONSTANTS.WINTILE_TEXTURE_PATH);
+        // Create a white square texture (10x10 size, adjust as needed)
+        const gfx = this.make.graphics({ x: 0, y: 0});
+        gfx.fillStyle(0xffffff, 1);
+        gfx.fillRect(0, 0, 10, 10);  // 10x10 white square
+        gfx.generateTexture('whiteSquare', 10, 10);
+        gfx.destroy(); // cleanup
     }
 
     create ()

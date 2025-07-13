@@ -24,6 +24,8 @@ export class Game extends Scene
     keyA?: Phaser.Input.Keyboard.Key;
     keyS?: Phaser.Input.Keyboard.Key;
     keyD?: Phaser.Input.Keyboard.Key;
+    smokeEmitter1: Phaser.GameObjects.Particles.ParticleEmitter;
+    smokeEmitter2: Phaser.GameObjects.Particles.ParticleEmitter;
     p1hasOutline: boolean = true;
     p2hasOutline: boolean = false;
     emptyPlatforms: Ground[] = [];
@@ -74,6 +76,24 @@ export class Game extends Scene
         this.winTile = new WinTile(this, CONSTANTS.WINDOW_WIDTH / 2, CONSTANTS.TERRAIN_TILE_SIZE/2, CONSTANTS.WINTILE);
         this.ball = new Ball(this, CONSTANTS.WINDOW_WIDTH - 3 * CONSTANTS.TERRAIN_TILE_SIZE, CONSTANTS.WINDOW_HEIGHT - CONSTANTS.TERRAIN_TILE_SIZE, CONSTANTS.BALL);
         this.ball.ball.setVisible(false);
+        this.smokeEmitter1 = this.add.particles(500,500,'whiteSquare',{
+            speed: { min: -50, max: 50 },
+            angle: { min: 0, max: 360 },
+            scale: { start: 1, end: 0 },
+            alpha: { start: 0.6, end: 0 },
+            lifespan: 1000,
+            frequency: 50,
+            blendMode: 'ADD',
+        });
+        this.smokeEmitter2 = this.add.particles(500,500,'whiteSquare',{
+            speed: { min: -50, max: 50 },
+            angle: { min: 0, max: 360 },
+            scale: { start: 1, end: 0 },
+            alpha: { start: 0.6, end: 0 },
+            lifespan: 1000,
+            frequency: 50,
+            blendMode: 'ADD',
+        });
         this.spawnPlayer();
         // Left side lasers
         const laser = new Laser(this, 300, 430, 'right', 0xff2222);
@@ -153,8 +173,26 @@ export class Game extends Scene
             // TODO: replace with next level
             this.scene.start('MainMenu');
         }
+        if (this.smokeEmitter1) {
+            this.smokeEmitter1.setPosition(this.player1.player.x, this.player1.player.y + CONSTANTS.PLAYER_TILE_SIZE / 2);
+            const isMoving = this.player1.player.body?.velocity.x !== 0 || this.player1.player.body?.velocity.y !== 0;
+            if (isMoving) {
+                this.smokeEmitter1.start();
+            } else {
+                this.smokeEmitter1.stop();
+            }
+        }
+        if (this.smokeEmitter2) {
+            this.smokeEmitter2.setPosition(this.player2.player.x, this.player2.player.y + CONSTANTS.PLAYER_TILE_SIZE / 2);
+            const isMoving = this.player2.player.body?.velocity.x !== 0 || this.player2.player.body?.velocity.y !== 0;
+            if (isMoving) {
+                this.smokeEmitter2.start();
+            } else {
+                this.smokeEmitter2.stop();
+            }
+        }
     }
-
+    
     spawnPlayer() {
         this.player1 = new Player(this, CONSTANTS.WINDOW_WIDTH - CONSTANTS.TERRAIN_TILE_SIZE, CONSTANTS.WINDOW_HEIGHT - CONSTANTS.TERRAIN_TILE_SIZE - CONSTANTS.PLAYER_TILE_SIZE / 2 , CONSTANTS.PLAYER);
         this.player1.player.anims.play(CONSTANTS.PLAYER_IDLE_OUTLINE);
