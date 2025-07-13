@@ -29,7 +29,6 @@ export class leveltwo extends Scene {
   p1hasOutline: boolean = true;
   p2hasOutline: boolean = false;
   emptyPlatforms: Ground[] = [];
-  fullLaser!: Phaser.GameObjects.Rectangle;
 
   constructor() {
     super('leveltwo');
@@ -89,15 +88,6 @@ export class leveltwo extends Scene {
 
     this.spawnPlayer();
 
-    // ✅ Matter.js rotating laser
-    const centerX = this.scale.width / 2;
-    const centerY = this.scale.height / 2;
-    this.fullLaser = this.add.rectangle(centerX, centerY, 10, 300, 0xff2222);
-    this.fullLaser.setOrigin(0.5);
-    this.matter.add.gameObject(this.fullLaser, {
-      isStatic: true
-    });
-
     // ✅ Regular static lasers
     const laser1 = new Laser(this, 300, 300, 'right', 0xff2222, 600);
     const laser2 = new Laser(this, 300, 400, 'right', 0xff2222, 600);
@@ -138,28 +128,6 @@ export class leveltwo extends Scene {
   }
 
   update(time: number, delta: number): void {
-    // 🌀 Rotate Matter laser
-    this.fullLaser.rotation += 0.01;
-    (this.fullLaser.body as MatterJS.BodyType).angle = this.fullLaser.rotation;
-
-    // Manual collision check (Matter laser vs Arcade player bounds)
-    if (
-      Phaser.Geom.Intersects.RectangleToRectangle(
-        this.player1.player.getBounds(),
-        this.fullLaser.getBounds()
-      ) && !this.p1hasOutline
-    ) {
-      this.scene.start('GameOver');
-    }
-
-    if (
-      Phaser.Geom.Intersects.RectangleToRectangle(
-        this.player2.player.getBounds(),
-        this.fullLaser.getBounds()
-      ) && !this.p2hasOutline
-    ) {
-      this.scene.start('GameOver');
-    }
 
     this.movePlayer(this.player2, this.p2hasOutline, this.keyW, this.keyS, this.keyA, this.keyD);
     this.movePlayer(this.player1, this.p1hasOutline, this.cursor?.up, this.cursor?.down, this.cursor?.left, this.cursor?.right);

@@ -14,7 +14,7 @@ export class MainMenu extends Phaser.Scene {
     this.cameras.main.setBackgroundColor('#0d0f18');
 
     // 🔳 Draw grid onto a dynamic texture
-    const gridGraphics = this.make.graphics({ x: 0, y: 0, add: false });
+    const gridGraphics = this.make.graphics({ x: 0, y: 0});
     const gridSize = 40;
     gridGraphics.lineStyle(1, 0x1f1f3a, 1);
 
