@@ -41,6 +41,8 @@ export class Preloader extends Scene
         this.load.text('level1', 'level1.tmj');
         this.load.image(CONSTANTS.BALL, CONSTANTS.BALL_TEXTURE_PATH);
         this.load.image(CONSTANTS.WINTILE, CONSTANTS.WINTILE_TEXTURE_PATH);
+        this.load.audio('bgm', 'Music/Music_by_Vlad_Krotov_from_Pixabay.mp3'); // path to your music file
+
     }
 
     create ()
@@ -49,6 +51,24 @@ export class Preloader extends Scene
         //  For example, you can define global animations here, so we can use them in other scenes.
 
         //  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
+        let music = this.sound.get('bgm');
+
+        if (!music) {
+            music = this.sound.add('bgm', {
+                loop: true,
+                volume: 0.3  // fallback default
+            });
+
+            // 🔁 Load saved volume/mute
+            const savedVolume = parseFloat(localStorage.getItem('estlem_music_volume') || '0.3');
+            const savedMuted = localStorage.getItem('estlem_music_muted') === 'true';
+
+            music.setVolume(savedVolume);
+            music.setMute(savedMuted);
+
+            music.play();
+        }
+
         this.scene.start('MainMenu');
     }
 }
