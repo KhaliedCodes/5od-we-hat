@@ -72,7 +72,6 @@ export class Game extends Scene
             }
         }
         this.winTile = new WinTile(this, CONSTANTS.WINDOW_WIDTH / 2, CONSTANTS.TERRAIN_TILE_SIZE/2, CONSTANTS.WINTILE);
-        this.winTile.winTile.scale = 3;
         this.ball = new Ball(this, CONSTANTS.WINDOW_WIDTH - 3 * CONSTANTS.TERRAIN_TILE_SIZE, CONSTANTS.WINDOW_HEIGHT - CONSTANTS.TERRAIN_TILE_SIZE, CONSTANTS.BALL);
         this.ball.ball.setVisible(false);
         this.spawnPlayer();
