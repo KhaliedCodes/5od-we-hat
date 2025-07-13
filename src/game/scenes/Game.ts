@@ -82,7 +82,7 @@ export class Game extends Scene
             scale: { start: 1, end: 0 },
             alpha: { start: 0.6, end: 0 },
             lifespan: 1000,
-            frequency: 50,
+            frequency: 100,
             blendMode: 'ADD',
         });
         this.smokeEmitter2 = this.add.particles(500,500,'whiteSquare',{
@@ -91,7 +91,7 @@ export class Game extends Scene
             scale: { start: 1, end: 0 },
             alpha: { start: 0.6, end: 0 },
             lifespan: 1000,
-            frequency: 50,
+            frequency: 100,
             blendMode: 'ADD',
         });
         this.spawnPlayer();
