@@ -8,11 +8,12 @@ export default class Laser extends Phaser.GameObjects.Rectangle {
     x: number,
     y: number,
     direction: 'up' | 'down' | 'left' | 'right',
-    color: number = 0xff2222
+    color: number = 0xff2222,
+    customLength: number = 200 // ← new optional param
   ) {
     const isVertical = direction === 'up' || direction === 'down';
-    const width = isVertical ? 16 : 200;
-    const height = isVertical ? 200 : 16;
+  const width = isVertical ? 16 : customLength;
+  const height = isVertical ? customLength : 16;
 
     // Create main solid beam
     super(scene, x, y, width, height, color);
