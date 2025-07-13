@@ -33,15 +33,15 @@ export class Game extends Scene
     create ()
     {
         this.camera = this.cameras.main;
-        this.camera.setBackgroundColor(0x00ff00);
+        this.camera.setBackgroundColor(0x000000);
 
 
-        this.msg_text = this.add.text(512, 384, 'Make something fun!\nand share it with us:\nsupport@phaser.io', {
-            fontFamily: 'Arial Black', fontSize: 38, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
-            align: 'center'
-        });
-        this.msg_text.setOrigin(0.5);
+        // this.msg_text = this.add.text(512, 384, 'Make something fun!\nand share it with us:\nsupport@phaser.io', {
+        //     fontFamily: 'Arial Black', fontSize: 38, color: '#ffffff',
+        //     stroke: '#000000', strokeThickness: 8,
+        //     align: 'center'
+        // });
+        // this.msg_text.setOrigin(0.5);
 
         
         
@@ -72,17 +72,33 @@ export class Game extends Scene
         this.ball = new Ball(this, CONSTANTS.WINDOW_WIDTH - 3 * CONSTANTS.TERRAIN_TILE_SIZE, CONSTANTS.WINDOW_HEIGHT - CONSTANTS.TERRAIN_TILE_SIZE, CONSTANTS.BALL);
         this.ball.ball.setVisible(false);
         this.spawnPlayer();
-                                const laser = new Laser(this, 400, 300, 'right', 0xff2222);
-        
+                        // Left side lasers
+                        const laser = new Laser(this, 300, 430, 'right', 0xff2222);
+                        const laser2 = new Laser(this, 300, 550, 'right', 0xff2222);
+                        const laser3 = new Laser(this, 445, 300, 'up', 0xff2222);
+                        // Right side lasers
+                        const laser4 = new Laser(this, 790, 430, 'left', 0xff2222);
+                        const laser5 = new Laser(this, 790, 550, 'left', 0xff2222);
+                        const laser6 = new Laser(this, 640, 300, 'down', 0xff2222);
+
+
                         this.laserGroup = this.add.group();
                         this.laserGroup.add(laser);
+                        this.laserGroup.add(laser2);
+                        this.laserGroup.add(laser3);
+                        this.laserGroup.add(laser4);
+                        this.laserGroup.add(laser5);
+                        this.laserGroup.add(laser6);
 
-
-                        this.physics.add.overlap(this.player1.player, laser, () => {
-                            this.scene.start('GameOver');
+                        this.physics.add.overlap(this.player1.player, this.laserGroup, () => { 
+                            if(!this.p1hasOutline) {
+                                this.scene.start('GameOver');
+                            }
                         });
-                        this.physics.add.overlap(this.player2.player, laser, () => {
-                            this.scene.start('GameOver');
+                        this.physics.add.overlap(this.player2.player, this.laserGroup, () => {
+                            if(!this.p2hasOutline) {
+                                this.scene.start('GameOver');
+                            }
                         });
         
         this.input?.keyboard?.on('keydown-E', () => {
