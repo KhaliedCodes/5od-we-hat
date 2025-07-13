@@ -7,7 +7,7 @@ import { Ball } from "../objects/Ball";
 import { WinTile } from '../objects/WinTile';
 import { FileReader } from '../utils/fileReader';
 
-export class Game extends Scene
+export class leveltwo extends Scene
 {
     camera: Phaser.Cameras.Scene2D.Camera;
     background: Phaser.GameObjects.Image;
@@ -18,7 +18,8 @@ export class Game extends Scene
     ballTarget: Player;
     ballmoving: boolean = false;
     ball: Ball;
-    winTile: WinTile;
+    winTile1: WinTile;
+    winTile2: WinTile;
     cursor?: Phaser.Types.Input.Keyboard.CursorKeys;
     keyW?: Phaser.Input.Keyboard.Key;
     keyA?: Phaser.Input.Keyboard.Key;
@@ -31,7 +32,7 @@ export class Game extends Scene
     emptyPlatforms: Ground[] = [];
 
     constructor() {
-        super('Game');
+        super('leveltwo');
     }
 
     create ()
@@ -55,7 +56,7 @@ export class Game extends Scene
         this.keyS = this.input?.keyboard?.addKey("S");
         this.keyD = this.input?.keyboard?.addKey("D");
         
-        let data = FileReader.readTileDataAsBooleanArray(this.cache.text.get('level1'))
+        let data = FileReader.readTileDataAsBooleanArray(this.cache.text.get('level2'))
         for (let y = 0; y < data.length; y++) {
             for (let x = 0; x < data[y].length; x++) {
                 if (data[y][x]) {
@@ -73,7 +74,8 @@ export class Game extends Scene
                 }
             }
         }
-        this.winTile = new WinTile(this, CONSTANTS.WINDOW_WIDTH / 2, CONSTANTS.TERRAIN_TILE_SIZE/2, CONSTANTS.WINTILE);
+        this.winTile1 = new WinTile(this, CONSTANTS.WINDOW_WIDTH - CONSTANTS.TERRAIN_TILE_SIZE/2, CONSTANTS.TERRAIN_TILE_SIZE/2, CONSTANTS.WINTILE);
+        this.winTile2 = new WinTile(this, CONSTANTS.TERRAIN_TILE_SIZE / 2, CONSTANTS.TERRAIN_TILE_SIZE/2, CONSTANTS.WINTILE);
         this.ball = new Ball(this, CONSTANTS.WINDOW_WIDTH - 3 * CONSTANTS.TERRAIN_TILE_SIZE, CONSTANTS.WINDOW_HEIGHT - CONSTANTS.TERRAIN_TILE_SIZE, CONSTANTS.BALL);
         this.ball.ball.setVisible(false);
         this.smokeEmitter1 = this.add.particles(500,500,'whiteSquare',{
@@ -169,7 +171,7 @@ export class Game extends Scene
                 this.ballmoving = false;
             }
         }
-        if (this.physics.world.overlap(this.player1.player, this.winTile.winTile) && this.physics.world.overlap(this.player2.player, this.winTile.winTile)) {
+        if (this.physics.world.overlap(this.player1.player, this.winTile2.winTile) && this.physics.world.overlap(this.player2.player, this.winTile1.winTile)) {
             // TODO: replace with next level
             this.scene.start('MainMenu');
         }

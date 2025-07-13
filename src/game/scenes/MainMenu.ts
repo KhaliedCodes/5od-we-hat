@@ -121,7 +121,7 @@ export class MainMenu extends Phaser.Scene {
     };
 
     // 🕹 Add buttons
-    createButton(-60, 'Start Game', () => this.scene.start('Game'));
+    createButton(-60, 'Start Game', () => this.scene.start('levelone'));
     createButton(0, 'Settings', () => this.scene.start('Settings'));
     createButton(60, 'Controls', () => this.scene.start('Controls'));
     createButton(120, 'Credits', () => this.scene.start('Credits'));
