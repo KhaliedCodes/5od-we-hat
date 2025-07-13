@@ -4,6 +4,7 @@ import { CONSTANTS } from '../../constants';
 import { Player } from '../objects/Player';
 import { Ground } from '../objects/ground';
 import { Ball } from "../objects/Ball";
+import { WinTile } from '../objects/WinTile';
 import { FileReader } from '../utils/fileReader';
 
 export class Game extends Scene
@@ -17,6 +18,7 @@ export class Game extends Scene
     ballTarget: Player;
     ballmoving: boolean = false;
     ball: Ball;
+    winTile: WinTile;
     cursor?: Phaser.Types.Input.Keyboard.CursorKeys;
     keyW?: Phaser.Input.Keyboard.Key;
     keyA?: Phaser.Input.Keyboard.Key;
@@ -69,37 +71,39 @@ export class Game extends Scene
                 }
             }
         }
+        this.winTile = new WinTile(this, CONSTANTS.WINDOW_WIDTH / 2, CONSTANTS.TERRAIN_TILE_SIZE/2, CONSTANTS.WINTILE);
+        this.winTile.winTile.scale = 3;
         this.ball = new Ball(this, CONSTANTS.WINDOW_WIDTH - 3 * CONSTANTS.TERRAIN_TILE_SIZE, CONSTANTS.WINDOW_HEIGHT - CONSTANTS.TERRAIN_TILE_SIZE, CONSTANTS.BALL);
         this.ball.ball.setVisible(false);
         this.spawnPlayer();
-                        // Left side lasers
-                        const laser = new Laser(this, 300, 430, 'right', 0xff2222);
-                        const laser2 = new Laser(this, 300, 550, 'right', 0xff2222);
-                        const laser3 = new Laser(this, 445, 300, 'up', 0xff2222);
-                        // Right side lasers
-                        const laser4 = new Laser(this, 790, 430, 'left', 0xff2222);
-                        const laser5 = new Laser(this, 790, 550, 'left', 0xff2222);
-                        const laser6 = new Laser(this, 640, 300, 'down', 0xff2222);
+        // Left side lasers
+        const laser = new Laser(this, 300, 430, 'right', 0xff2222);
+        const laser2 = new Laser(this, 300, 550, 'right', 0xff2222);
+        const laser3 = new Laser(this, 445, 300, 'up', 0xff2222);
+        // Right side lasers
+        const laser4 = new Laser(this, 790, 430, 'left', 0xff2222);
+        const laser5 = new Laser(this, 790, 550, 'left', 0xff2222);
+        const laser6 = new Laser(this, 640, 300, 'down', 0xff2222);
 
 
-                        this.laserGroup = this.add.group();
-                        this.laserGroup.add(laser);
-                        this.laserGroup.add(laser2);
-                        this.laserGroup.add(laser3);
-                        this.laserGroup.add(laser4);
-                        this.laserGroup.add(laser5);
-                        this.laserGroup.add(laser6);
+        this.laserGroup = this.add.group();
+        this.laserGroup.add(laser);
+        this.laserGroup.add(laser2);
+        this.laserGroup.add(laser3);
+        this.laserGroup.add(laser4);
+        this.laserGroup.add(laser5);
+        this.laserGroup.add(laser6);
 
-                        this.physics.add.overlap(this.player1.player, this.laserGroup, () => { 
-                            if(!this.p1hasOutline) {
-                                this.scene.start('GameOver');
-                            }
-                        });
-                        this.physics.add.overlap(this.player2.player, this.laserGroup, () => {
-                            if(!this.p2hasOutline) {
-                                this.scene.start('GameOver');
-                            }
-                        });
+        this.physics.add.overlap(this.player1.player, this.laserGroup, () => { 
+            if(!this.p1hasOutline) {
+                this.scene.start('GameOver');
+            }
+        });
+        this.physics.add.overlap(this.player2.player, this.laserGroup, () => {
+            if(!this.p2hasOutline) {
+                this.scene.start('GameOver');
+            }
+        });
         
         this.input?.keyboard?.on('keydown-E', () => {
             if (!this.p2hasOutline) {
@@ -145,6 +149,10 @@ export class Game extends Scene
                 this.ball.ball.setVisible(false);
                 this.ballmoving = false;
             }
+        }
+        if (this.physics.world.overlap(this.player1.player, this.winTile.winTile) && this.physics.world.overlap(this.player2.player, this.winTile.winTile)) {
+            // TODO: replace with next level
+            this.scene.start('MainMenu');
         }
     }
 

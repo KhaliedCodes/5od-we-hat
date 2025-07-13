@@ -40,6 +40,7 @@ export class Preloader extends Scene
         this.load.image(CONSTANTS.PLATFORM, CONSTANTS.PLATFORM_TEXTURE_PATH);
         this.load.text('level1', 'level1.tmj');
         this.load.image(CONSTANTS.BALL, CONSTANTS.BALL_TEXTURE_PATH);
+        this.load.image(CONSTANTS.WINTILE, CONSTANTS.WINTILE_TEXTURE_PATH);
     }
 
     create ()
